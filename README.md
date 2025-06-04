@@ -1,2 +1,4 @@
-# my-cursor-app
-# my-cursor-app
+# index.html
+# scprit.js
+# style.css
+
