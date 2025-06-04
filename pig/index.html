@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아기돼지 잡기 게임</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #fce4ec;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .game-instructions {
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2);
+        }
+
+        .game-instructions h1 {
+            color: #ff4081;
+            margin-bottom: 15px;
+            font-size: 2em;
+        }
+
+        .game-instructions p {
+            color: #ff80ab;
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
+
+        #gameField {
+            width: 100%;
+            height: 500px;
+            background-color: white;
+            border: 4px solid #ff80ab;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2);
+        }
+
+        #bow {
+            position: absolute;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 3.5em;
+            cursor: pointer;
+            z-index: 100;
+            transition: transform 0.2s;
+            animation: floatBow 2s ease-in-out infinite;
+        }
+
+        @keyframes floatBow {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+
+        #bow:hover {
+            transform: translateX(-50%) scale(1.1);
+        }
+
+        .arrow {
+            position: absolute;
+            font-size: 2em;
+            z-index: 90;
+            pointer-events: none;
+            filter: drop-shadow(0 0 5px rgba(255, 105, 180, 0.5));
+        }
+
+        .arrow-trail {
+            position: absolute;
+            height: 4px;
+            background: linear-gradient(to top, #ff69b4, transparent);
+            z-index: 80;
+            pointer-events: none;
+            opacity: 0.7;
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.3);
+        }
+
+        .pig {
+            position: absolute;
+            font-size: 3.5em;
+            transition: transform 0.2s;
+            cursor: pointer;
+            filter: drop-shadow(0 0 5px rgba(255, 105, 180, 0.3));
+        }
+
+        .pig.hit {
+            animation: disappear 0.3s forwards;
+        }
+
+        @keyframes disappear {
+            to {
+                transform: scale(1.5) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            animation: sparkleAnim 0.5s forwards;
+            z-index: 95;
+            filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.5));
+        }
+
+        @keyframes sparkleAnim {
+            0% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2) rotate(180deg);
+                opacity: 0;
+            }
+        }
+
+        #timer, #score {
+            font-size: 1.5em;
+            color: #ff4081;
+            margin: 10px 0;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(255, 105, 180, 0.3);
+        }
+
+        button {
+            background-color: #ff4081;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+        }
+
+        button:hover {
+            background-color: #ff80ab;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+        }
+
+        #result {
+            display: none;
+            background-color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2);
+            animation: popIn 0.5s forwards;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        #result h2 {
+            color: #ff4081;
+            margin-bottom: 15px;
+        }
+
+        #resultText {
+            font-size: 1.3em;
+            color: #ff80ab;
+            margin: 15px 0;
+        }
+
+        .ranking-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2);
+            display: none;
+        }
+
+        .ranking-section h2 {
+            color: #ff4081;
+            margin-bottom: 15px;
+        }
+
+        .ranking-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #fce4ec;
+            border-radius: 10px;
+            font-size: 1.2em;
+            color: #ff4081;
+        }
+
+        .ranking-item .rank {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .ranking-item .score {
+            font-weight: bold;
+        }
+
+        .new-record {
+            animation: newRecord 1s ease-in-out infinite;
+            background-color: #ff80ab;
+            color: white;
+        }
+
+        @keyframes newRecord {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="game-instructions">
+            <h1>🏹 아기돼지 잡기 게임 🐷</h1>
+            <p>💝 활을 클릭하면 화살이 발사됩니다!</p>
+            <p>⏰ 15초 동안 진행되는 게임입니다</p>
+            <p>🎯 30마리 이상: 우승! / 20~29마리: 명사수상 / 19마리 이하: 재도전!</p>
+        </div>
+
+        <div id="gameField">
+            <div id="bow">🏹</div>
+        </div>
+
+        <div id="timer">15초</div>
+        <div id="score">잡은 돼지: 0마리</div>
+        <button id="startBtn">게임 시작!</button>
+
+        <div id="result">
+            <h2>게임 종료!</h2>
+            <p id="resultText"></p>
+            <button id="restartBtn">다시 도전!</button>
+        </div>
+
+        <div id="ranking" class="ranking-section">
+            <h2>🏆 최고 기록 TOP 5 🏆</h2>
+            <div id="rankingList"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
