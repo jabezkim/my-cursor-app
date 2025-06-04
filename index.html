@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7초 맞추기 게임</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 7초 맞추기 게임 🎮</h1>
+        
+        <div class="game-instructions">
+            <h2>게임 방법</h2>
+            <p>1. '시작' 버튼을 누르면 시간이 흘러갑니다.</p>
+            <p>2. 정확히 7초라고 생각되면 '멈춤' 버튼을 누르세요!</p>
+            <p>3. 7초를 정확히 맞추면 완벽한 성공! 🎉</p>
+            <p>4. 0.1초 오차 이내면 대성공! 🎉</p>
+            <p>5. 6.5초~7.5초 사이면 성공! 🎈</p>
+        </div>
+
+        <div class="game-area">
+            <div id="timer">0.0</div>
+            <button id="gameBtn">시작!</button>
+        </div>
+
+        <div id="result" class="hidden">
+            <h2>결과</h2>
+            <p id="resultText"></p>
+        </div>
+
+        <div id="fireworks" class="hidden"></div>
+
+        <div class="ranking">
+            <h2>🏆 명예의 전당 🏆</h2>
+            <ol id="rankingList"></ol>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
